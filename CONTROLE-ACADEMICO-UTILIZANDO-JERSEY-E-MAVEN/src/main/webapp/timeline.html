@@ -1,0 +1,93 @@
+
+<html>
+<head>
+          <title>TODO supply a title</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+           <script src="resources/jquery-3.1.1.min.js"></script>
+          <link rel="stylesheet" type="text/css" href="resources/bootstrap.min.css">
+          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+          <script>
+                    $(document).ready(function(){
+                              var nomeOrientador = decodeURIComponent(window.location.search.substring(6));
+                              var text = document.createTextNode("Orientador: "+nomeOrientador);
+                              var h2 = document.getElementById('orientador');
+                              h2.appendChild(text);
+                              var nomes = [];
+                              var anoInicial = [];
+                              var anoFinal = [];
+                              var mesInicial = [];
+                              var mesFinal = [];
+                              $.ajax({
+                                        type: "get",
+                                        url: "rest/alunos",
+                                        datatype: "json",
+                                        async: true,
+                                        cache: false,
+                                        success: function(data){
+                                                  $.each(data, function(i, d){
+                                                            if(JSON.parse(d).orientador == nomeOrientador){
+                                                                      console.log(JSON.parse(d));
+                                                                      nomes.push(JSON.parse(d).nome);
+                                                                      anoInicial.push(JSON.parse(d).dataInicio.ano);
+                                                                      anoFinal.push(JSON.parse(d).dataFinal.ano);
+                                                                      mesInicial.push(JSON.parse(d).dataInicio.mes);
+                                                                      mesFinal.push(JSON.parse(d).dataFinal.mes);
+                                                            }
+                                                  });   
+                                                 
+                                                  if(nomes.length==3){
+                                                            google.charts.load('current', {'packages':['timeline']});
+                                                            google.charts.setOnLoadCallback(drawChart);
+                                                            function drawChart() {
+                                                                      var container = document.getElementById('timeline');
+                                                                      var chart = new google.visualization.Timeline(container);
+                                                                      var dataTable = new google.visualization.DataTable();
+                                                                      dataTable.addColumn({ type: 'string', id: 'President' });
+                                                                      dataTable.addColumn({ type: 'date', id: 'Start' });
+                                                                      dataTable.addColumn({ type: 'date', id: 'End' });
+                                                                      dataTable.addRows([     
+                                                                                [ nomes[0], new Date(anoInicial[0], 11, 0), new Date(anoFinal[0], 11, 0) ],
+                                                                                [nomes[1],      new Date(anoInicial[1], mesInicial[1], 0),  new Date(anoFinal[1], mesFinal[1], 0) ],
+                                                                                [ nomes[2],  new Date(anoInicial[2], mesInicial[2], 0),  new Date(anoFinal[2], mesFinal[2], 0) ]]);
+                                                                                //[ nomes[3],  new Date(anoInicial[3], mesInicial[3], 0),  new Date(anoFinal[3], mesFinal[3], 0) ]]);
+                                                                       var options = { colors: ['#2ecc71', '#3498db', '#d9534f'] };
+                                                                      chart.draw(dataTable, options);
+                                                            }
+                                              }else if(nomes.length == 2){
+                                                            google.charts.load('current', {'packages':['timeline']});
+                                                            google.charts.setOnLoadCallback(drawChart);
+                                                            function drawChart() {
+                                                                      var container = document.getElementById('timeline');
+                                                                      var chart = new google.visualization.Timeline(container);
+                                                                      var dataTable = new google.visualization.DataTable();
+                                                                      dataTable.addColumn({ type: 'string', id: 'President' });
+                                                                      dataTable.addColumn({ type: 'date', id: 'Start' });
+                                                                      dataTable.addColumn({ type: 'date', id: 'End' });
+                                                                      dataTable.addRows([     
+                                                                                [ nomes[0], new Date(anoInicial[0], 11, 0), new Date(anoFinal[0], 11, 0) ],
+                                                                                [nomes[1],      new Date(anoInicial[1], mesInicial[1], 0),  new Date(anoFinal[1], mesFinal[1], 0) ]]);
+                                                                                //[ nomes[2],  new Date(anoInicial[2], mesInicial[2], 0),  new Date(anoFinal[2], mesFinal[2], 0) ]]);
+                                                                                //[ nomes[3],  new Date(anoInicial[3], mesInicial[3], 0),  new Date(anoFinal[3], mesFinal[3], 0) ]]);
+                                                                      var options = { colors: ['#2ecc71', '#3498db'] };
+                                                                      chart.draw(dataTable, options);
+                                                            }
+                                              }
+                                        }
+                              });    
+
+                              console.log(anoInicial);
+                              console.log(anoFinal);
+                              console.log(nomes);
+                              
+                    });
+                
+          </script>          
+</head>
+<body>
+         
+          <h1 id="orientador"  style="text-align: center; margin-top: 2%;"></h1><br> <br><hr><br>
+          <h2 style="text-align: center;">Timeline</h2><br>
+          <div id="timeline" style="max-width: 1500px; height: 600px; margin: 0 auto"></div>
+</body>
+</html>

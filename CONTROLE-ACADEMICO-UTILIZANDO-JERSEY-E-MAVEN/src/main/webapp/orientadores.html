@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+          <title>Orientadores</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="resources/jquery-3.1.1.min.js"></script>
+          <link rel="stylesheet" type="text/css" href="resources/bootstrap.min.css">
+          <script src="https://d3js.org/d3.v4.min.js"></script>
+          <script>
+               $(document).ready(function(){
+                              $.ajax({
+                                        type: "get",
+                                        url: "rest/orientadores",
+                                        datatype: "json",
+                                        async: true,
+                                        cache: false,
+                                        success: function(data){  
+                                                  console.log(data);
+                                                  var div = document.getElementById("div1");
+                                                  $.each(data, function(i, d){
+                                                            console.log(JSON.parse(d));
+                                                            var a = document.createElement("a");
+                                                            var text = document.createTextNode(JSON.parse(d).nome);
+                                                            a.appendChild(text);
+                                                            a.setAttribute("href", "timeline.html?nome="+JSON.parse(d).nome);
+                                                            a.setAttribute("class", "list-group-item");
+                                                            div.appendChild(a);
+                                                  });               
+                                        }
+                              });
+       
+                    });
+          </script>
+</head>
+<body>
+          <h1 style="text-align: center; margin-top: 2%;">Orientadores</h1><br><hr><br>
+          <div class="list-group" style="max-width: 600px; height: 400px; margin: 0 auto" id="div1">
+
+          </div>
+        
+</body>
+</html>
